@@ -69,16 +69,16 @@ namespace SalesLibrary {
             customer.State = Convert.ToString(reader["State"])!;
             customer.Sales = Convert.ToDecimal(reader["Sales"])!;
             customer.Active = Convert.ToBoolean(reader["Active"])!;
-            reader.Close() ;
+            reader.Close();
             return customer;
         }
-  
+
         public bool Add(Customer cust) {
             var sql = "INSERT Customers ( Name, City, State, Sales, Active) VALUES " +
                       $"('{cust.Name}','{cust.City}','{cust.State}', {cust.Sales}, {(cust.Active ? 1 : 0)});";
             var cmd = new SqlCommand(sql, sqlConnection);
             var rowsAffected = cmd.ExecuteNonQuery();
-            if(rowsAffected == 0) {
+            if (rowsAffected == 0) {
                 return false;
             }
             return true;
@@ -110,7 +110,7 @@ namespace SalesLibrary {
             if (rowsAffected == 0) {
                 return false;
             }
-            
+
             return true;
         }
 
@@ -128,9 +128,36 @@ namespace SalesLibrary {
         }
 
         public void CloseConnection() {
-            if(sqlConnection.State == System.Data.ConnectionState.Open) {
+            if (sqlConnection.State == System.Data.ConnectionState.Open) {
                 sqlConnection.Close();
             }
         }
+
+
+
+        //Practice Orders Table Connection
+
+        public List<Order> GetAllOrders() {
+            var sql = "SELECT * FROM Orders;";
+            var cmd = new SqlCommand(sql, sqlConnection);
+            SqlDataReader reader = cmd.ExecuteReader();
+            List<Order> orders = new List<Order>();
+            while (reader.Read()) {
+                Order order = new Order();
+                order.Id = Convert.ToInt32(reader["Id"]);
+                order.CustomerId = Convert.ToInt32(reader["CustomerId"]);
+                order.Date = Convert.ToDateTime(reader["Date"])!;
+                order.Description = Convert.ToString(reader["Description"])!;
+                //order.Add(order);
+
+            }
+            reader.Close();
+            return orders;
+        }
+
+
+
+        //^^^Practice Orders Table Connection^^^
     }
+
 }
